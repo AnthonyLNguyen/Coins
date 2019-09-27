@@ -3,6 +3,7 @@ package me.justeli.coins.main;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.MrAxe.BeastTokens.Tokens.TokensAPI;
 import me.justeli.coins.cancel.CancelHopper;
 import me.justeli.coins.cancel.CancelInventories;
 import me.justeli.coins.cancel.CoinPlace;
@@ -39,7 +40,7 @@ import java.util.Locale;
 public class Coins extends JavaPlugin
 {
     private static Coins main;
-    private static Economy eco;
+    private static TokensAPI tokensAPI;
 
     static String update;
 
@@ -127,8 +128,8 @@ public class Coins extends JavaPlugin
 
         try
         {
-            RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-            eco = rsp.getProvider();
+            RegisteredServiceProvider<TokensAPI> rsp = getServer().getServicesManager().getRegistration(TokensAPI.class);
+            tokensAPI = rsp.getProvider();
         }
         catch (NullPointerException | NoClassDefFoundError e)
         {
@@ -137,10 +138,7 @@ public class Coins extends JavaPlugin
         }
     }
 
-    public static Economy getEconomy ()
-    {
-        return eco;
-    }
+    public static TokensAPI getTokensAPI (){ return tokensAPI; }
 
     public static void particles (Location location, int radius, int amount)
     {

@@ -6,12 +6,12 @@
 # All available languages can be found in folder 'languages' in the plugin folder.
 # Included languages by default: english, dutch, german, french, spanish, swedish, chinese & hungarian.
 language: english
-currencySymbol: "$"
+currencySymbol: "Tokens"
 
 # You aren't really going to notice this, but in hoppers you can see its name.
 # See a list of all color codes here: http://minecraft.gamepedia.com/Formatting_codes
 # 'multiSuffix's parameter will be added behind 'nameOfCoin' in case it's more than one coin.
-nameOfCoin: "&6Coin"
+nameOfCoin: "&bToken"
 multiSuffix: "s"
 
 # What item will the dropped 'coin' (material) be? Find all materials at:
@@ -24,20 +24,20 @@ pickupMessage: "&2+ &a{$}%amount%"
 
 # This plugin will drop one coin, being worth what's set at 'moneyAmount'. But here you can
 # set that a mob should drop 'moneyAmount's AMOUNT of coins, with each coin being worth $1.
-dropEachCoin: false
+dropEachCoin: true
 
 # The amount of money one coin is worth. Creates a random number between
 # 'from' and 'to' which - as money - will be given to the player on pickup.
 # However, if 'dropEachCoin' is set to true, killed mobs will drop 'from' to 'to' coins,
 # with each coin being worth $1. So by default it will drop 3 to 7 coins when 'dropEachCoin' is true.
 moneyAmount:
-  from: 3.0
-  to: 7.0
+  from: 3
+  to: 7
 
 # How many decimals should money have? Set to 0 for integers/rounded money (i.e. $3 $6 $8).
 # Value 1 (default) means i.e. $2.3 $5.8 $8.0, value of 2 means i.e. $5.23, $3.70, $6.99, etc.
 # This setting will be ignored (and set to 0) if 'dropEachCoin' is set to true.
-moneyDecimals: 1
+moneyDecimals: 0
 
 # Should coins be stacked? (Or should a coin be one on its own?)
 # Stacked coins don't act like one coin. The stack is counted and the worth is multiplied.
@@ -56,7 +56,7 @@ mobMultiplier:
   PLAYER: 3
 
 # When a player gets killed by another player, should (three; setting above) coins drop?
-playerDrop: true
+playerDrop: false
 
 # And should coins NOT drop when both players have the same ip address?
 # This means that no coin(s) will be dropped if both players are from the same computer.
@@ -66,11 +66,11 @@ preventAlts: true
 # Should mobs from spawners drop a coin too?
 # Mobs from spawners won't drop a coin by default.
 # When 'false', mobs can still drop coins when the player (who killed) has permission: 'coins.spawner'.
-spawnerDrop: false
+spawnerDrop: true
 
 # Should passive mobs also drop a coin?
 # Passive mobs don't drop a coin by default.
-passiveDrop: false
+passiveDrop: true
 
 # Prevent slimes and magma cubes spawned by splits from dropping coins?
 # I've noticed that players can easily get hundreds of coins in slime chunks keeping this 'false'.

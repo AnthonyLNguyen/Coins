@@ -137,7 +137,7 @@ class Cmds implements CommandExecutor
                     return true;
                 }
 
-                if (amount > 0 && amount <= Settings.hD.get(Config.DOUBLE.maxWithdrawAmount) && Coins.getEconomy().getBalance(p) >= amount)
+                if (amount > 0 && amount <= Settings.hD.get(Config.DOUBLE.maxWithdrawAmount) && Coins.getTokensAPI().getTokens(p) >= amount)
                 {
                     if (p.getInventory().firstEmpty() == -1)
                     {
@@ -145,7 +145,7 @@ class Cmds implements CommandExecutor
                         return true;
                     }
                     p.getInventory().addItem( new Coin().withdraw(amount).item() );
-                    Coins.getEconomy().withdrawPlayer(p, amount);
+                    Coins.getTokensAPI().removeTokens(p, (int)amount);
                     p.sendMessage(color (
                             Messages.WITHDRAW_COINS.toString().replace("{0}", Long.toString(amount)) ));
                     new ActionBar(Settings.hS.get(Config.STRING.deathMessage)

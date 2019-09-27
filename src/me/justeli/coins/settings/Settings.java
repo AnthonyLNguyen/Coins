@@ -254,8 +254,8 @@ public class Settings
                 Coins.console(Coins.LogType.ERROR, "Please use a sound from: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html" );
                 break;
             case NO_ECONOMY_SUPPORT:
-                Coins.console(Coins.LogType.ERROR, "There seems to be no Vault or economy supportive plugin installed." );
-                Coins.console(Coins.LogType.ERROR, "Please install Vault and an economy supportive plugin like Essentials." );
+                Coins.console(Coins.LogType.ERROR, "There seems to be no BeastTokens plugin installed." );
+                Coins.console(Coins.LogType.ERROR, "Please install BeastTokens." );
                 Coins.console(Coins.LogType.ERROR, "Coins will be disabled now.." );
                 break;
             case NO_TRANSLATION:

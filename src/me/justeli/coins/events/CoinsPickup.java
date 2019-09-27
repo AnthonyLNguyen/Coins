@@ -128,10 +128,11 @@ public class CoinsPickup implements Listener
 		addMoney (p, total, Settings.hD.get(Config.DOUBLE.moneyDecimals).intValue());
 	}
 
-	private static void addMoney (Player p, Double a, int integer)
+	private static void addMoney (Player p, double a, int integer)
 	{
 		final Double amount = format(a, integer);
-		Coins.getEconomy().depositPlayer(p, amount);
+		//Coins.getEconomy().depositPlayer(p, amount);
+		Coins.getTokensAPI().addTokens(p, (int) a);
 
 		final UUID u = p.getUniqueId();
 
