@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by Eli on 12/13/2016.
@@ -41,6 +42,7 @@ public class Coins extends JavaPlugin
 {
     private static Coins main;
     private static TokensAPI tokensAPI;
+    private static Economy eco;
 
     static String update;
 
@@ -122,21 +124,24 @@ public class Coins extends JavaPlugin
             metrics.add("moneyAmount", ( String.valueOf((Settings.hD.get(Config.DOUBLE.moneyAmount_from)
                     + Settings.hD.get(Config.DOUBLE.moneyAmount_to))/2) ));
         });
+        if (Settings.hB.get(Config.BOOLEAN.BeastTokens)){
+            if (getServer().getPluginManager().getPlugin("BeastTokens") == null)
+                Bukkit.getPluginManager().disablePlugin(this);
+        } else {
+            if (getServer().getPluginManager().getPlugin("Vault") == null)
+                Bukkit.getPluginManager().disablePlugin(this);
 
-        if (getServer().getPluginManager().getPlugin("Vault") == null)
-            Bukkit.getPluginManager().disablePlugin(this);
-
-        try
-        {
-            RegisteredServiceProvider<TokensAPI> rsp = getServer().getServicesManager().getRegistration(TokensAPI.class);
-            tokensAPI = rsp.getProvider();
-        }
-        catch (NullPointerException | NoClassDefFoundError e)
-        {
-            Settings.errorMessage(Settings.Msg.NO_ECONOMY_SUPPORT, new String[]{""});
-            Bukkit.getPluginManager().disablePlugin(this);
+            try {
+                RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+                eco = rsp.getProvider();
+            } catch (NullPointerException | NoClassDefFoundError e) {
+                Settings.errorMessage(Settings.Msg.NO_ECONOMY_SUPPORT, new String[]{""});
+                Bukkit.getPluginManager().disablePlugin(this);
+            }
         }
     }
+
+    public static Economy getEconomy (){ return eco; }
 
     public static TokensAPI getTokensAPI (){ return tokensAPI; }
 

@@ -126,34 +126,43 @@ class Cmds implements CommandExecutor
 
             Player p = (Player) sender;
 
-            if (args.length >= 1)
-            {
+            if (args.length >= 1) {
                 long amount;
 
-                try { amount = Integer.valueOf(args[0]); }
-                catch (NumberFormatException e)
-                {
-                    sender.sendMessage(color( Messages.INVALID_AMOUNT.toString() ));
+                try {
+                    amount = Integer.valueOf(args[0]);
+                } catch (NumberFormatException e) {
+                    sender.sendMessage(color(Messages.INVALID_AMOUNT.toString()));
                     return true;
                 }
-
-                if (amount > 0 && amount <= Settings.hD.get(Config.DOUBLE.maxWithdrawAmount) && Coins.getTokensAPI().getTokens(p) >= amount)
-                {
-                    if (p.getInventory().firstEmpty() == -1)
-                    {
-                        p.sendMessage(color(Messages.INVENTORY_FULL.toString()));
-                        return true;
-                    }
-                    p.getInventory().addItem( new Coin().withdraw(amount).item() );
-                    Coins.getTokensAPI().removeTokens(p, (int)amount);
-                    p.sendMessage(color (
-                            Messages.WITHDRAW_COINS.toString().replace("{0}", Long.toString(amount)) ));
-                    new ActionBar(Settings.hS.get(Config.STRING.deathMessage)
-                            .replace("%amount%", String.valueOf( amount )).replace("{$}", Settings.hS.get(Config.STRING.currencySymbol))).send(p);
+                if (Settings.hB.get(Config.BOOLEAN.BeastTokens)) {
+                    if (amount > 0 && amount <= Settings.hD.get(Config.DOUBLE.maxWithdrawAmount) && Coins.getTokensAPI().getTokens(p) >= amount) {
+                        if (p.getInventory().firstEmpty() == -1) {
+                            p.sendMessage(color(Messages.INVENTORY_FULL.toString()));
+                            return true;
+                        }
+                        p.getInventory().addItem(new Coin().withdraw(amount).item());
+                        Coins.getTokensAPI().removeTokens(p, (int) amount);
+                        p.sendMessage(color(
+                                Messages.WITHDRAW_COINS.toString().replace("{0}", Long.toString(amount))));
+                        new ActionBar(Settings.hS.get(Config.STRING.deathMessage)
+                                .replace("%amount%", String.valueOf(amount)).replace("{$}", Settings.hS.get(Config.STRING.currencySymbol))).send(p);
+                    } else p.sendMessage(color(Messages.NOT_THAT_MUCH.toString()));
+                } else {
+                    if (amount > 0 && amount <= Settings.hD.get(Config.DOUBLE.maxWithdrawAmount) && Coins.getEconomy().getBalance(p) >= amount) {
+                        if (p.getInventory().firstEmpty() == -1) {
+                            p.sendMessage(color(Messages.INVENTORY_FULL.toString()));
+                            return true;
+                        }
+                        p.getInventory().addItem(new Coin().withdraw(amount).item());
+                        Coins.getEconomy().withdrawPlayer(p, amount);
+                        p.sendMessage(color(
+                                Messages.WITHDRAW_COINS.toString().replace("{0}", Long.toString(amount))));
+                        new ActionBar(Settings.hS.get(Config.STRING.deathMessage)
+                                .replace("%amount%", String.valueOf(amount)).replace("{$}", Settings.hS.get(Config.STRING.currencySymbol))).send(p);
+                    } else p.sendMessage(color(Messages.NOT_THAT_MUCH.toString()));
                 }
-                else p.sendMessage(color ( Messages.NOT_THAT_MUCH.toString()) );
             }
-
             else p.sendMessage(color( Messages.WITHDRAW_USAGE.toString()));
 
         }

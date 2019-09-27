@@ -6,6 +6,7 @@ import me.justeli.coins.item.Coin;
 import me.justeli.coins.main.Coins;
 import me.justeli.coins.settings.Config;
 import me.justeli.coins.settings.Settings;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -23,36 +24,68 @@ public class DropCoin implements Listener
         for (String world : Settings.hA.get(Config.ARRAY.disabledWorlds) )
             if (m.getWorld().getName().equalsIgnoreCase(world))
                 return;
+        if (Settings.hB.get(Config.BOOLEAN.BeastTokens)) {
+            if (e.getEntity().getKiller() != null) {
+                if (
+                        (m instanceof Monster || m instanceof Slime || m instanceof Ghast || m instanceof EnderDragon ||
+                                (!Settings.hB.get(Config.BOOLEAN.olderServer) && m instanceof Shulker) ||
+                                (Settings.hB.get(Config.BOOLEAN.newerServer) && m instanceof Phantom)
+                        )
 
-        if (e.getEntity().getKiller() != null)
-        {
-            if (
-                    (m instanceof Monster || m instanceof Slime || m instanceof Ghast || m instanceof EnderDragon ||
-                            (!Settings.hB.get(Config.BOOLEAN.olderServer) && m instanceof Shulker) ||
-                            (Settings.hB.get(Config.BOOLEAN.newerServer) && m instanceof Phantom)
-                    )
+                                || ((m instanceof Animals || m instanceof Squid || m instanceof Snowman || m instanceof IronGolem
+                                || m instanceof Villager || m instanceof Ambient) && Settings.hB.get(Config.BOOLEAN.passiveDrop))
 
-                    || ( (m instanceof Animals || m instanceof Squid || m instanceof Snowman || m instanceof IronGolem
-                            || m instanceof Villager || m instanceof Ambient) && Settings.hB.get(Config.BOOLEAN.passiveDrop) )
+                                || (m instanceof Player && Settings.hB.get(Config.BOOLEAN.playerDrop) && Coins.getTokensAPI().getTokens((Player) m) >= 0)
+                        )
 
-                    || (m instanceof Player && Settings.hB.get(Config.BOOLEAN.playerDrop) && Coins.getTokensAPI().getTokens((Player)m) >= 0)
-                )
+                {
+                    dropTheCoin(m, e.getEntity().getKiller());
+                }
 
-            { dropTheCoin(m, e.getEntity().getKiller()); }
+            }
 
-        }
+            if (m instanceof Player && Settings.hB.get(Config.BOOLEAN.loseOnDeath)) {
+                double second = Settings.hD.get(Config.DOUBLE.moneyTaken_from);
+                double first = Settings.hD.get(Config.DOUBLE.moneyTaken_to) - second;
 
-        if ( m instanceof Player && Settings.hB.get(Config.BOOLEAN.loseOnDeath) )
-        {
-            double second = Settings.hD.get(Config.DOUBLE.moneyTaken_from);
-            double first = Settings.hD.get(Config.DOUBLE.moneyTaken_to) - second;
+                Player p = (Player) e.getEntity();
+                double random = Math.random() * first + second;
 
-            Player p = (Player) e.getEntity();
-            double random = Math.random() * first + second;
+                Coins.getTokensAPI().removeTokens(p, (int) random);
+                Title.sendSubTitle(p, 20, 100, 20, Settings.hS.get(Config.STRING.deathMessage)
+                        .replace("%amount%", String.valueOf((long) random)).replace("{$}", Settings.hS.get(Config.STRING.currencySymbol)));
+            }
+        } else {
+            if (e.getEntity().getKiller() != null) {
+                if (
+                        (m instanceof Monster || m instanceof Slime || m instanceof Ghast || m instanceof EnderDragon ||
+                                (!Settings.hB.get(Config.BOOLEAN.olderServer) && m instanceof Shulker) ||
+                                (Settings.hB.get(Config.BOOLEAN.newerServer) && m instanceof Phantom)
+                        )
 
-            Coins.getTokensAPI().removeTokens(p, (int)random);
-            Title.sendSubTitle(p, 20, 100, 20, Settings.hS.get(Config.STRING.deathMessage)
-                        .replace("%amount%", String.valueOf( (long)random )).replace("{$}", Settings.hS.get(Config.STRING.currencySymbol)));
+                                || ((m instanceof Animals || m instanceof Squid || m instanceof Snowman || m instanceof IronGolem
+                                || m instanceof Villager || m instanceof Ambient) && Settings.hB.get(Config.BOOLEAN.passiveDrop))
+
+                                || (m instanceof Player && Settings.hB.get(Config.BOOLEAN.playerDrop) && Coins.getEconomy().getBalance((Player) m) >= 0)
+                        )
+
+                {
+                    dropTheCoin(m, e.getEntity().getKiller());
+                }
+
+            }
+
+            if (m instanceof Player && Settings.hB.get(Config.BOOLEAN.loseOnDeath)) {
+                double second = Settings.hD.get(Config.DOUBLE.moneyTaken_from);
+                double first = Settings.hD.get(Config.DOUBLE.moneyTaken_to) - second;
+
+                Player p = (Player) e.getEntity();
+                double random = Math.random() * first + second;
+
+                Coins.getEconomy().withdrawPlayer(p, (long) random);
+                Title.sendSubTitle(p, 20, 100, 20, Settings.hS.get(Config.STRING.deathMessage)
+                        .replace("%amount%", String.valueOf((long) random)).replace("{$}", Settings.hS.get(Config.STRING.currencySymbol)));
+            }
         }
 	}
 

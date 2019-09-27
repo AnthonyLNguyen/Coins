@@ -131,8 +131,11 @@ public class CoinsPickup implements Listener
 	private static void addMoney (Player p, double a, int integer)
 	{
 		final Double amount = format(a, integer);
-		//Coins.getEconomy().depositPlayer(p, amount);
-		Coins.getTokensAPI().addTokens(p, (int) a);
+
+		 if (Settings.hB.get(Config.BOOLEAN.BeastTokens))
+		 	Coins.getTokensAPI().addTokens(p, (int) a);
+		  else
+		 	Coins.getEconomy().depositPlayer(p, amount);
 
 		final UUID u = p.getUniqueId();
 

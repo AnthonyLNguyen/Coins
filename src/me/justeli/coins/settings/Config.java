@@ -22,6 +22,7 @@ public enum Config
         dropEachCoin,
         preventSplits,
         newerServer,
+        BeastTokens,
     }
 
     public enum STRING
