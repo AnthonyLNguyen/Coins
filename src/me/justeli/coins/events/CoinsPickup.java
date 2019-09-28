@@ -1,5 +1,6 @@
 package me.justeli.coins.events;
 
+import me.MrAxe.BeastTokens.Tokens.TokensAPI;
 import me.justeli.coins.api.ActionBar;
 import me.justeli.coins.main.Coins;
 import me.justeli.coins.settings.Config;
@@ -131,10 +132,21 @@ public class CoinsPickup implements Listener
 	private static void addMoney (Player p, double a, int integer)
 	{
 		final Double amount = format(a, integer);
-
-		 if (Settings.hB.get(Config.BOOLEAN.BeastTokens))
-		 	Coins.getTokensAPI().addTokens(p, (int) a);
-		  else
+		 if (Settings.hB.get(Config.BOOLEAN.BeastTokens)) {
+		 	 Coins.getBeastTokens().getTokensManager().addTokens(p,(int) a);
+			 /*TokensAPI tk = new TokensAPI(Coins.getBeastTokens());
+			 tk.addTokens(p, (int) a);
+			 Coins.console(Coins.LogType.INFO, p.getDisplayName()
+					 + " ( loaded = "
+					 + tk.isLoaded(p)
+					 + ") picking up "
+					 + (int) a
+					 + " tokens. Now has:"
+					 + tk.getTokens(p)
+			 );
+			 tk.unLoadPlayer(p);*/
+		 }
+		 else
 		 	Coins.getEconomy().depositPlayer(p, amount);
 
 		final UUID u = p.getUniqueId();

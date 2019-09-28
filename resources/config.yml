@@ -7,7 +7,7 @@
 # Included languages by default: english, dutch, german, french, spanish, swedish, chinese & hungarian.
 language: english
 currencySymbol: "Tokens"
-
+BeastTokens: true
 # You aren't really going to notice this, but in hoppers you can see its name.
 # See a list of all color codes here: http://minecraft.gamepedia.com/Formatting_codes
 # 'multiSuffix's parameter will be added behind 'nameOfCoin' in case it's more than one coin.

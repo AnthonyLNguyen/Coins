@@ -222,6 +222,7 @@ public class Settings
         NO_SUCH_ENTITY,
         NO_SUCH_SOUND,
         NO_ECONOMY_SUPPORT,
+        NO_BEASTTOKENS_SUPPORT,
         NO_SUCH_MATERIAL,
         NO_TRANSLATION,
     }
@@ -254,10 +255,14 @@ public class Settings
                 Coins.console(Coins.LogType.ERROR, "Please use a sound from: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html" );
                 break;
             case NO_ECONOMY_SUPPORT:
+                Coins.console(Coins.LogType.ERROR, "There seems to be no Vault or Economy plugin installed." );
+                Coins.console(Coins.LogType.ERROR, "Please install Vault." );
+                Coins.console(Coins.LogType.ERROR, "Coins will be disabled now.." );
+                break;
+            case NO_BEASTTOKENS_SUPPORT:
                 Coins.console(Coins.LogType.ERROR, "There seems to be no BeastTokens plugin installed." );
                 Coins.console(Coins.LogType.ERROR, "Please install BeastTokens." );
                 Coins.console(Coins.LogType.ERROR, "Coins will be disabled now.." );
-                break;
             case NO_TRANSLATION:
                 Coins.console(Coins.LogType.ERROR, "The translation for '" + input[0] + "' was not found.");
                 Coins.console(Coins.LogType.ERROR, "Please add it to the {language}.json file.");

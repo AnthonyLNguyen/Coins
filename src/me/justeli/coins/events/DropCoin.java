@@ -6,7 +6,6 @@ import me.justeli.coins.item.Coin;
 import me.justeli.coins.main.Coins;
 import me.justeli.coins.settings.Config;
 import me.justeli.coins.settings.Settings;
-import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -35,7 +34,7 @@ public class DropCoin implements Listener
                                 || ((m instanceof Animals || m instanceof Squid || m instanceof Snowman || m instanceof IronGolem
                                 || m instanceof Villager || m instanceof Ambient) && Settings.hB.get(Config.BOOLEAN.passiveDrop))
 
-                                || (m instanceof Player && Settings.hB.get(Config.BOOLEAN.playerDrop) && Coins.getTokensAPI().getTokens((Player) m) >= 0)
+                                || (m instanceof Player && Settings.hB.get(Config.BOOLEAN.playerDrop) && Coins.getBeastTokens().getTokensManager().getTokens((Player) m) >= 0)
                         )
 
                 {
@@ -51,7 +50,7 @@ public class DropCoin implements Listener
                 Player p = (Player) e.getEntity();
                 double random = Math.random() * first + second;
 
-                Coins.getTokensAPI().removeTokens(p, (int) random);
+                Coins.getBeastTokens().getTokensManager().removeTokens(p, (int) random);
                 Title.sendSubTitle(p, 20, 100, 20, Settings.hS.get(Config.STRING.deathMessage)
                         .replace("%amount%", String.valueOf((long) random)).replace("{$}", Settings.hS.get(Config.STRING.currencySymbol)));
             }

@@ -3,6 +3,7 @@ package me.justeli.coins.main;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.MrAxe.BeastTokens.BeastTokens;
 import me.MrAxe.BeastTokens.Tokens.TokensAPI;
 import me.justeli.coins.cancel.CancelHopper;
 import me.justeli.coins.cancel.CancelInventories;
@@ -41,8 +42,9 @@ import java.util.Set;
 public class Coins extends JavaPlugin
 {
     private static Coins main;
-    private static TokensAPI tokensAPI;
+    private static BeastTokens beastTokens;
     private static Economy eco;
+    private static TokensAPI tk;
 
     static String update;
 
@@ -125,8 +127,16 @@ public class Coins extends JavaPlugin
                     + Settings.hD.get(Config.DOUBLE.moneyAmount_to))/2) ));
         });
         if (Settings.hB.get(Config.BOOLEAN.BeastTokens)){
+            Coins.console(LogType.INFO, "Using BeastTokens Hook");
             if (getServer().getPluginManager().getPlugin("BeastTokens") == null)
                 Bukkit.getPluginManager().disablePlugin(this);
+            try {
+                beastTokens = (BeastTokens) getServer().getPluginManager().getPlugin("BeastTokens");
+                tk = new TokensAPI(beastTokens);
+            } catch (NullPointerException | NoClassDefFoundError e) {
+                Settings.errorMessage(Settings.Msg.NO_BEASTTOKENS_SUPPORT, new String[]{""});
+                Bukkit.getPluginManager().disablePlugin(this);
+            }
         } else {
             if (getServer().getPluginManager().getPlugin("Vault") == null)
                 Bukkit.getPluginManager().disablePlugin(this);
@@ -143,7 +153,7 @@ public class Coins extends JavaPlugin
 
     public static Economy getEconomy (){ return eco; }
 
-    public static TokensAPI getTokensAPI (){ return tokensAPI; }
+    public static BeastTokens getBeastTokens(){ return beastTokens; }
 
     public static void particles (Location location, int radius, int amount)
     {

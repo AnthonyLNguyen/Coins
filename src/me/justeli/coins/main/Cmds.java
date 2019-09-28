@@ -136,13 +136,13 @@ class Cmds implements CommandExecutor
                     return true;
                 }
                 if (Settings.hB.get(Config.BOOLEAN.BeastTokens)) {
-                    if (amount > 0 && amount <= Settings.hD.get(Config.DOUBLE.maxWithdrawAmount) && Coins.getTokensAPI().getTokens(p) >= amount) {
+                    if (amount > 0 && amount <= Settings.hD.get(Config.DOUBLE.maxWithdrawAmount) && Coins.getBeastTokens().getTokensManager().getTokens(p) >= amount) {
                         if (p.getInventory().firstEmpty() == -1) {
                             p.sendMessage(color(Messages.INVENTORY_FULL.toString()));
                             return true;
                         }
                         p.getInventory().addItem(new Coin().withdraw(amount).item());
-                        Coins.getTokensAPI().removeTokens(p, (int) amount);
+                        Coins.getBeastTokens().getTokensManager().removeTokens(p, (int) amount);
                         p.sendMessage(color(
                                 Messages.WITHDRAW_COINS.toString().replace("{0}", Long.toString(amount))));
                         new ActionBar(Settings.hS.get(Config.STRING.deathMessage)
