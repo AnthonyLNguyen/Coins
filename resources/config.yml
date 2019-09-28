@@ -55,6 +55,10 @@ mobMultiplier:
   WITHER: 20
   PLAYER: 3
 
+blocks:
+  GRASS: 30
+  POTATO: 30
+
 # When a player gets killed by another player, should (three; setting above) coins drop?
 playerDrop: false
 

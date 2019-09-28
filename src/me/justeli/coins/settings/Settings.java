@@ -33,7 +33,8 @@ public class Settings
     public final static HashMap<Config.ARRAY, List<String>> hA = new HashMap<>();
 
     final static HashMap<Messages, String> language = new HashMap<>();
-    public final static HashMap<EntityType, Integer> multiplier = new HashMap<>();
+    public final static HashMap<EntityType, Integer> multiplier_mobs = new HashMap<>();
+    public final static HashMap<Material, Integer> multiplier_blocks = new HashMap<>();
 
     private static FileConfiguration getFile ()
     {
@@ -105,11 +106,25 @@ public class Settings
                 try
                 {
                     EntityType type = EntityType.valueOf( key.toUpperCase() );
-                    multiplier.put(type, file.getInt( Config.STRING.mobMultiplier.name() + "." + key ));
+                    multiplier_mobs.put(type, file.getInt( Config.STRING.mobMultiplier.name() + "." + key ));
                 }
                 catch (IllegalArgumentException e)
                 {
                     errorMessage( Msg.NO_SUCH_ENTITY, new String[] {key.toUpperCase()} );
+                    return false;
+                }
+            }
+            Set<String> bkeys = file.getConfigurationSection( Config.STRING.blocks.name() ).getKeys(false);
+            for ( String key :  bkeys)
+            {
+                try
+                {
+                    Material mat = Material.valueOf( key.toUpperCase() );
+                    multiplier_blocks.put(mat, file.getInt( Config.STRING.blocks.name() + "." + key ));
+                }
+                catch (IllegalArgumentException e)
+                {
+                    errorMessage( Msg.NO_SUCH_MATERIAL, new String[] {key.toUpperCase()} );
                     return false;
                 }
             }
@@ -128,7 +143,7 @@ public class Settings
 
     public static void remove ()
     {
-        multiplier.clear();
+        multiplier_mobs.clear();
         hB.clear();
         hS.clear();
         hD.clear();
@@ -140,6 +155,10 @@ public class Settings
         StringBuilder message = new StringBuilder( Messages.LOADED_SETTINGS.toString() + "\n&r" );
         for (Config.STRING s : Config.STRING.values())
             if (!s.equals(Config.STRING.mobMultiplier))
+                message.append(s.toString()).append(" &7\u00BB &8").append(hS.get(s)).append("\n&r");
+
+        for (Config.STRING s : Config.STRING.values())
+            if (!s.equals(Config.STRING.blocks))
                 message.append(s.toString()).append(" &7\u00BB &8").append(hS.get(s)).append("\n&r");
 
         for (Config.BOOLEAN s : Config.BOOLEAN.values())

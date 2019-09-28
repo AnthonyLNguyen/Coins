@@ -34,6 +34,7 @@ public enum Config
         deathMessage,
         soundName,
         mobMultiplier,
+        blocks,
         currencySymbol,
         multiSuffix
     }

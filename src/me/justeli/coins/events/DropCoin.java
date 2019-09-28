@@ -10,8 +10,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.block.data.Ageable;
 
 public class DropCoin implements Listener
 {
@@ -88,6 +90,32 @@ public class DropCoin implements Listener
         }
 	}
 
+    @EventHandler
+    public void onPlayerBreakBlock(BlockBreakEvent b){
+        for (String world : Settings.hA.get(Config.ARRAY.disabledWorlds) )
+            if (b.getPlayer().getWorld().getName().equalsIgnoreCase(world))
+                return;
+        if (Settings.hB.get(Config.BOOLEAN.BeastTokens)) {
+            if (Settings.multiplier_blocks.containsKey(b.getBlock().getType()) ) {
+                int amount = 1;
+                amount = Settings.multiplier_blocks.get(b.getBlock().getType());
+                int second = Settings.hD.get(Config.DOUBLE.moneyAmount_from).intValue();
+                int first = Settings.hD.get(Config.DOUBLE.moneyAmount_to).intValue() + 1 - second;
+                amount *= (Math.random() * first + second);
+                if (b.getBlock().getBlockData() instanceof Ageable) {
+                    Ageable crop = (Ageable) b.getBlock().getBlockData();
+                    if (crop.getAge() == crop.getMaximumAge())
+                        return;
+                }
+                Coins.console(Coins.LogType.INFO, "Drop Block detected: " + b.getBlock().getType().name());
+                for (int i = 0; i < amount; i++) {
+                    ItemStack coin = new Coin().stack(!Settings.hB.get(Config.BOOLEAN.dropEachCoin)).item();
+                    b.getBlock().getLocation().getWorld().dropItem(b.getBlock().getLocation(), coin);
+                }
+            }
+        }
+    }
+
 	private void dropTheCoin (Entity m, Player p)
     {
         CoinDropEvent dropEvent = new CoinDropEvent(m, p);
@@ -112,29 +140,26 @@ public class DropCoin implements Listener
             PreventSpawner.removeFromList(m);
             return;
         }
+        if ( p != null ) {
+            if (!PreventSpawner.fromSpawner(m) || p.hasPermission("coins.spawner")) {
+                if (Math.random() <= Settings.hD.get(Config.DOUBLE.dropChance)) {
+                    int amount = 1;
+                    if (Settings.multiplier_mobs.containsKey(m.getType()))
+                        amount = Settings.multiplier_mobs.get(m.getType());
 
-        if (!PreventSpawner.fromSpawner(m) || p.hasPermission("coins.spawner"))
-        {
-            if (Math.random() <= Settings.hD.get(Config.DOUBLE.dropChance))
-            {
-                int amount = 1;
-                if (Settings.multiplier.containsKey(m.getType()))
-                    amount = Settings.multiplier.get(m.getType());
+                    if (Settings.hB.get(Config.BOOLEAN.dropEachCoin)) {
+                        int second = Settings.hD.get(Config.DOUBLE.moneyAmount_from).intValue();
+                        int first = Settings.hD.get(Config.DOUBLE.moneyAmount_to).intValue() + 1 - second;
 
-                if (Settings.hB.get(Config.BOOLEAN.dropEachCoin))
-                {
-                    int second = Settings.hD.get(Config.DOUBLE.moneyAmount_from).intValue();
-                    int first = Settings.hD.get(Config.DOUBLE.moneyAmount_to).intValue()+1 - second;
+                        amount *= (Math.random() * first + second);
+                    }
 
-                    amount *= ( Math.random() * first + second );
+                    for (int i = 0; i < amount; i++) {
+                            ItemStack coin = new Coin().stack(stack).item();
+                            m.getLocation().getWorld().dropItem(m.getLocation(), coin);
+                    }
+
                 }
-
-                for (int i = 0; i < amount; i ++)
-                {
-                    ItemStack coin = new Coin().stack(stack).item();
-                    m.getLocation().getWorld().dropItem(m.getLocation(), coin);
-                }
-
             }
         }
         else PreventSpawner.removeFromList(m);
