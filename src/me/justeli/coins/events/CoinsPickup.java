@@ -133,18 +133,7 @@ public class CoinsPickup implements Listener
 	{
 		final Double amount = format(a, integer);
 		 if (Settings.hB.get(Config.BOOLEAN.BeastTokens)) {
-		 	 Coins.getBeastTokens().getTokensManager().addTokens(p,(int) a);
-			 /*TokensAPI tk = new TokensAPI(Coins.getBeastTokens());
-			 tk.addTokens(p, (int) a);
-			 Coins.console(Coins.LogType.INFO, p.getDisplayName()
-					 + " ( loaded = "
-					 + tk.isLoaded(p)
-					 + ") picking up "
-					 + (int) a
-					 + " tokens. Now has:"
-					 + tk.getTokens(p)
-			 );
-			 tk.unLoadPlayer(p);*/
+		 	Coins.getBeastTokens().getTokensManager().addTokens(p,(int) a);
 		 }
 		 else
 		 	Coins.getEconomy().depositPlayer(p, amount);
