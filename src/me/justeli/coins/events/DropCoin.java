@@ -24,7 +24,7 @@ public class DropCoin implements Listener
             if (m.getWorld().getName().equalsIgnoreCase(world))
                 return;
         if (Settings.hB.get(Config.BOOLEAN.BeastTokens)) {
-            if (e.getEntity().getKiller() != null) {
+            if (e.getEntity().getKiller() != null || !Settings.hB.get(Config.BOOLEAN.KillerRequired)) {
                 if (
                         (m instanceof Monster || m instanceof Slime || m instanceof Ghast || m instanceof EnderDragon ||
                                 (!Settings.hB.get(Config.BOOLEAN.olderServer) && m instanceof Shulker) ||

@@ -23,6 +23,7 @@ public enum Config
         preventSplits,
         newerServer,
         BeastTokens,
+        KillerRequired,
     }
 
     public enum STRING
