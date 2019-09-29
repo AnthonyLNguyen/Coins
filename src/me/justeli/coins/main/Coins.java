@@ -1,10 +1,7 @@
 package me.justeli.coins.main;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.bgsoftware.wildstacker.api.WildStackerAPI;
 import me.MrAxe.BeastTokens.BeastTokens;
-import me.MrAxe.BeastTokens.Tokens.TokensAPI;
 import me.justeli.coins.cancel.CancelHopper;
 import me.justeli.coins.cancel.CancelInventories;
 import me.justeli.coins.cancel.CoinPlace;
@@ -22,19 +19,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Locale;
-import java.util.Set;
 
 /**
  * Created by Eli on 12/13/2016.
@@ -47,8 +39,11 @@ public class Coins extends JavaPlugin
     private static Coins main;
     private static BeastTokens beastTokens;
     private static Economy eco;
-    private static TokensAPI tk;
     private static Settings s;
+
+    public static boolean usingWildStacker = false;
+    public static boolean usingBeastTokens = false;
+    public static boolean usingJetsMinions = false;
 
     static String update;
 
@@ -83,7 +78,7 @@ public class Coins extends JavaPlugin
             if (v.contains("1.14") || v.contains("1.13"))
                 Settings.hB.put(Config.BOOLEAN.newerServer, true);
 
-            String version;
+/*            String version;
             try
             {
                 URL           url     = new URL("https://api.github.com/repos/JustEli/Coins/releases/latest");
@@ -105,7 +100,7 @@ public class Coins extends JavaPlugin
             {
                 Coins.console(LogType.INFO, "A new version of Coins was released (" + version + ")!");
                 Coins.console(LogType.INFO, "https://www.spigotmc.org/resources/coins.33382/");
-            }
+            }*/
         });
 
         later(() ->
@@ -132,21 +127,43 @@ public class Coins extends JavaPlugin
             metrics.add("moneyAmount", ( String.valueOf((Settings.hD.get(Config.DOUBLE.moneyAmount_from)
                     + Settings.hD.get(Config.DOUBLE.moneyAmount_to))/2) ));
         });
+        if (Settings.hB.get(Config.BOOLEAN.WildStacker)) {
+            if (getServer().getPluginManager().getPlugin("WildStacker") != null) {
+                Coins.console(LogType.INFO, "Trying to use WildStacker Hook");
+                try {
+                    usingWildStacker = true;
+                } catch (NullPointerException | NoClassDefFoundError e) {
+                    Coins.console(LogType.INFO, "WildStacker not found, disabling hook."); //Doesn't actually do anything
+                    //Settings.errorMessage(Settings.Msg.NO_WILDSTACKER_SUPPORT, new String[]{""});
+                }
+            }
+        }
+        if (Settings.hB.get(Config.BOOLEAN.JetsMinions)) {
+            Coins.console(LogType.INFO, "Trying to use JetsMinions Hook");
+            if (getServer().getPluginManager().getPlugin("JetsMinions") == null){
+                Coins.console(LogType.INFO, "JetsMinions not found, disabling hook."); //Doesn't actually do anything
+                //Settings.errorMessage(Settings.Msg.NO_JETSMINIONS_SUPPORT, new String[]{""});
+                //Bukkit.getPluginManager().disablePlugin(this);
+            } else {
+                usingJetsMinions = true;
+            }
+        }
         if (Settings.hB.get(Config.BOOLEAN.BeastTokens)){
-            Coins.console(LogType.INFO, "Using BeastTokens Hook");
-            if (getServer().getPluginManager().getPlugin("BeastTokens") == null)
-                Bukkit.getPluginManager().disablePlugin(this);
-            try {
-                beastTokens = (BeastTokens) getServer().getPluginManager().getPlugin("BeastTokens");
-                tk = new TokensAPI(beastTokens);
-            } catch (NullPointerException | NoClassDefFoundError e) {
-                Settings.errorMessage(Settings.Msg.NO_BEASTTOKENS_SUPPORT, new String[]{""});
-                Bukkit.getPluginManager().disablePlugin(this);
+            Coins.console(LogType.INFO, "Trying to use BeastTokens Hook");
+            if (getServer().getPluginManager().getPlugin("BeastTokens") != null){
+                try {
+                    beastTokens = (BeastTokens) getServer().getPluginManager().getPlugin("BeastTokens");
+                    usingBeastTokens = true;
+                } catch (NullPointerException | NoClassDefFoundError e) {
+                    Settings.errorMessage(Settings.Msg.NO_BEASTTOKENS_SUPPORT, new String[]{""});
+                    Bukkit.getPluginManager().disablePlugin(this);
+                }
+            } else {
+                Coins.console(LogType.INFO, "BeastTokens not found, disabling hook.");
             }
         } else {
             if (getServer().getPluginManager().getPlugin("Vault") == null)
                 Bukkit.getPluginManager().disablePlugin(this);
-
             try {
                 RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
                 eco = rsp.getProvider();
@@ -155,10 +172,16 @@ public class Coins extends JavaPlugin
                 Bukkit.getPluginManager().disablePlugin(this);
             }
         }
-        Coins.console(LogType.INFO, "verbose: " + Settings.hB.get(Config.BOOLEAN.verbose));
+        Coins.console(LogType.INFO, "verbose: " + Settings.hB.get(Config.BOOLEAN.debug));
     }
 
     public static Economy getEconomy (){ return eco; }
+
+    public static int getStackedAmount(LivingEntity entity) {
+        if (usingWildStacker) {
+            return WildStackerAPI.getEntityAmount(entity);
+        } else return 1;
+    }
 
     public static BeastTokens getBeastTokens(){ return beastTokens; }
 
@@ -258,6 +281,6 @@ public class Coins extends JavaPlugin
             case WARNING:   color = ChatColor.YELLOW;   break;
             default:        color = ChatColor.WHITE;    break;
         }
-        Bukkit.getConsoleSender().sendMessage(color + "=" + type.name() + "= " + message);
+        Bukkit.getConsoleSender().sendMessage(color + "[CoinDrops] - " + type.name() + ": " + message);
     }
 }

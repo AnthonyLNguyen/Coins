@@ -1,29 +1,79 @@
-DropChances:
- Global:
-   IRON_ORE:
-     Chance: 50
+# https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+
+
+DropChances:    #REQUIRED
+  Global:       #ALL WORLDS
+   IRON_ORE:    #Material name or ALL (case sensitive)
+     Chance: 12 #Chance out of 100 (% chance)
+     Min: 1     #Miniumum amount that can drop
+     Max: 3     #Maxmimum amount that can drop
+   GOLD_ORE:
+     Chance: 12
+     Min: 1
+     Max: 5
+   REDSTONE_ORE:
+     Chance: 12
+     Min: 1
+     Max: 4
+   COAL_ORE:
+     Chance: 12
+     Min: 1
+     Max: 2
+   NETHER_QUARTZ_ORE:
+     Chance: 12
      Min: 1
      Max: 3
- Worlds:
-   world:
-     CARROTS:
-       Chance: 50
-       Min: 1
-       Max: 3
-     COAL_ORE:
-       Chance: 50
-       Min: 1
-       Max: 3
-     IRON_ORE:
-       Chance: 50
-       Min: 1
-       Max: 3
+   LAPIS_ORE:
+     Chance: 12
+     Min: 1
+     Max: 3
+   DIAMOND_ORE:
+     Chance: 20
+     Min: 1
+     Max: 8
+   EMERALD_ORE:
+     Chance: 20
+     Min: 1
+     Max: 8
+   POTATOES:
+     Chance: 6
+     Min: 1
+     Max: 2
+   STONE:
+     Chance: 3
+     Min: 1
+     Max: 1
+   WHEAT:
+     Chance: 6
+     Min: 1
+     Max: 2
+   BEETROOTS:
+     Chance: 10
+     Min: 1
+     Max: 5
+   CARROTS:
+     Chance: 6
+     Min: 1
+     Max: 2
+   SUGAR_CANE:
+     Chance: 10
+     Min: 1
+     Max: 5
+   CACTUS:
+     Chance: 10
+     Min: 1
+     Max: 5
+   MELON:
+     Chance: 20
+     Min: 1
+     Max: 5
+   NETHER_WART:
+     Chance: 8
+     Min: 1
+     Max: 2
+  Worlds:
    world_nether:
-     IRON_ORE:
-       Chance: 50
-       Min: 1
-       Max: 3
-     DIAMOND_ORE:
-       Chance: 50
+     NETHER_QUARTZ_ORE:
+       Chance: 5
        Min: 1
        Max: 3

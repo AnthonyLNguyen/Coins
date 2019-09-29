@@ -133,7 +133,7 @@ public class CoinsPickup implements Listener
 	private static void addMoney (Player p, double a, int integer)
 	{
 		final Double amount = format(a, integer);
-		 if (Settings.hB.get(Config.BOOLEAN.BeastTokens)) {
+		 if (Coins.usingBeastTokens) {
 		 	Coins.getBeastTokens().getTokensManager().addTokens(p,(int) a);
 		 }
 		 else

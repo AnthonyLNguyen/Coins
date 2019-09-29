@@ -22,8 +22,11 @@ public enum Config
         preventSplits,
         newerServer,
         BeastTokens,
+        JetsMinions,
+        WildStacker,
         KillerRequired,
-        verbose,
+        debug,
+        ;
     }
 
     public enum STRING

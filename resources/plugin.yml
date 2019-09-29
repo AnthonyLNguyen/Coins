@@ -1,8 +1,8 @@
-author: JustEli
-version: 1.7.3
+author: Thingon
+version: 1.0.0
 main: me.justeli.coins.main.Coins
-name: Coins-BeastTokens-Fork
-softdepend: [Vault, BeastTokens]
+name: CoinDrops
+softdepend: [Vault, BeastTokens, JetsMinions, WildStacker]
 api-version: 1.13
 commands:
   coins:

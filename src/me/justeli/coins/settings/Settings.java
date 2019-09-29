@@ -54,13 +54,17 @@ public class Settings
         mobf = new File(coins.getDataFolder(), "mob.yml");
         blockf = new File(coins.getDataFolder(), "block.yml");
         configf = new File( Coins.getInstance().getDataFolder() + File.separator + "config.yml" );
-        if (!configf.exists())
+        if (!configf.exists()) {
+            Coins.console(Coins.LogType.INFO,"config.yml doesn't exist! Creating new file.");
             Coins.getInstance().saveDefaultConfig();
+        }
         if (!mobf.exists()) {
+            Coins.console(Coins.LogType.INFO,"mob.yml doesn't exist! Creating new file.");
             mobf.getParentFile().mkdirs();
             coins.saveResource("mob.yml", false);
         }
         if (!blockf.exists()) {
+            Coins.console(Coins.LogType.INFO,"block.yml doesn't exist! Creating new file.");
             blockf.getParentFile().mkdirs();
             coins.saveResource("block.yml", false);
         }
@@ -240,6 +244,8 @@ public class Settings
         NO_SUCH_SOUND,
         NO_ECONOMY_SUPPORT,
         NO_BEASTTOKENS_SUPPORT,
+        NO_JETSMINIONS_SUPPORT,
+        NO_WILDSTACKER_SUPPORT,
         NO_SUCH_MATERIAL,
         NO_TRANSLATION,
     }
@@ -279,6 +285,14 @@ public class Settings
             case NO_BEASTTOKENS_SUPPORT:
                 Coins.console(Coins.LogType.ERROR, "There seems to be no BeastTokens plugin installed." );
                 Coins.console(Coins.LogType.ERROR, "Please install BeastTokens." );
+                Coins.console(Coins.LogType.ERROR, "Coins will be disabled now.." );
+            case NO_JETSMINIONS_SUPPORT:
+                Coins.console(Coins.LogType.ERROR, "There seems to be no JetsMinions plugin installed." );
+                Coins.console(Coins.LogType.ERROR, "Please install JetsMinions." );
+                Coins.console(Coins.LogType.ERROR, "Coins will be disabled now.." );
+            case NO_WILDSTACKER_SUPPORT:
+                Coins.console(Coins.LogType.ERROR, "There seems to be no WildStacker plugin installed." );
+                Coins.console(Coins.LogType.ERROR, "Please install WildStacker." );
                 Coins.console(Coins.LogType.ERROR, "Coins will be disabled now.." );
             case NO_TRANSLATION:
                 Coins.console(Coins.LogType.ERROR, "The translation for '" + input[0] + "' was not found.");

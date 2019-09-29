@@ -7,7 +7,12 @@
 # Included languages by default: english, dutch, german, french, spanish, swedish, chinese & hungarian.
 language: english
 currencySymbol: "Tokens"
+
+# These cannot be updated with /coin reload
 BeastTokens: true
+JetsMinions: true
+WildStacker: true
+
 # You aren't really going to notice this, but in hoppers you can see its name.
 # See a list of all color codes here: http://minecraft.gamepedia.com/Formatting_codes
 # 'multiSuffix's parameter will be added behind 'nameOfCoin' in case it's more than one coin.
@@ -69,10 +74,6 @@ preventSplits: true
 pickupSound: true
 soundName: "ENTITY_CHICKEN_EGG"
 
-# Chance of dropping a coin after a mob has been killed.
-# Value from 0.0 to 1.0: 0.0 meaning 0%, 1.0 meaning 100% (so 0.9 meaning 90%).
-dropChance: 0.9
-
 # List all worlds you want Coins to be disabled in here.
 # Example for disabling two worlds called 'creative' and 'plots':
 #    disabledWorlds:
@@ -84,7 +85,7 @@ disabledWorlds:
 # Lets players use /withdraw <amount> to get a coin "<amount> <coin name>s": for example "53 Coins".
 # This allows players to store the coins in chests, but won't be easier to give to others.
 # When the coin gets dropped, and picked up after, give the player the amount of money the coin was worth.
-enableWithdraw: true
+enableWithdraw: false
 maxWithdrawAmount: 10000.0
 
 
@@ -105,4 +106,5 @@ moneyTaken:
 # The message in the middle of their screen.
 deathMessage: "&4- &c{$}%amount%"
 
-verbose: true
+# Debug mode
+debug: false

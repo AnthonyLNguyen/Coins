@@ -1,35 +1,74 @@
-DropChances:
- Global:
-    PLAYER:
-        Chance: 1
-        NumTokens: 1
-    SKELETON:
-        Chance: 1
-        NumTokens: 1
+# https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
+
+DropChances:        #REQUIRED
+  Global:           #ALL WORLDS
+    SKELETON:       #Mob name or ALL (case sensitive)
+      Chance: 12    #Chance out of 100 (% chance)
+      Min: 1        #Miniumum amount that can drop
+      Max: 3        #Maxmimum amount that can drop
     CREEPER:
-        Chance: 1
-        NumTokens: 1
+      Chance: 12
+      Min: 1
+      Max: 3
     CAVE_SPIDER:
-        Chance: 1
-        NumTokens: 1
+      Chance: 12
+      Min: 1
+      Max: 3
     SPIDER:
-        Chance: 1
-        NumTokens: 1
+      Chance: 12
+      Min: 1
+      Max: 3
     PIG_ZOMBIE:
-        Chance: 1
-        NumTokens: 1
- Worlds:
-  world:
-    CREEPER:
-        Chance: 1
-        NumTokens: 10
-    SPIDER:
-        Chance: 1
-        NumTokens: 1
-  world_nether:
-    SKELETON:
-        Chance: 1
-        NumTokens: 1
-    PIG_ZOMBIE:
-        Chance: 1
-        NumTokens: 1
+      Chance: 12
+      Min: 1
+      Max: 3
+    WITCH:
+      Chance: 12
+      Min: 1
+      Max: 3
+    VILLAGER:
+      Chance: 25
+      Min: 1
+      Max: 10
+    CHICKEN:
+      Chance: 5
+      Min: 1
+      Max: 2
+    PIG:
+      Chance: 10
+      Min: 1
+      Max: 2
+    COW:
+      Chance: 12
+      Min: 1
+      Max: 2
+    SHEEP:
+      Chance: 10
+      Min: 1
+      Max: 2
+    RABBIT:
+      Chance: 10
+      Min: 1
+      Max: 2
+    BLAZE:
+      Chance: 50
+      Min: 1
+      Max: 2
+    ENDERMAN:
+      Chance: 50
+      Min: 1
+      Max: 2
+    IRON_GOLEM:
+      Chance: 25
+      Min: 1
+      Max: 4
+    GUARDIAN:
+      Chance: 25
+      Min: 1
+      Max: 10
+  Worlds:
+    world_nether:
+      BLAZE:
+        Chance: 50
+        Min: 1
+        Max: 2
