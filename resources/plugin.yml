@@ -1,9 +1,9 @@
 author: JustEli
-version: 1.7.3 - BeastTokens Fork
+version: 1.7.3
 main: me.justeli.coins.main.Coins
-name: Coins
+name: Coins-BeastTokens-Fork
 softdepend: [Vault, BeastTokens]
-
+api-version: 1.13
 commands:
   coins:
     aliases: [coin, withdraw]

@@ -20,19 +20,19 @@ coinItem: coin     # coin = sunflower
 
 # This message is sent as action bar, telling the player how much money they have picked up.
 # The variable {$} will be replaced by the 'currencySymbol', default: $.
-pickupMessage: "&2+ &a{$}%amount%"
+pickupMessage: "&3+ &b%amount% {$}"
 
 # This plugin will drop one coin, being worth what's set at 'moneyAmount'. But here you can
 # set that a mob should drop 'moneyAmount's AMOUNT of coins, with each coin being worth $1.
-dropEachCoin: true
+dropEachCoin: false
 
 # The amount of money one coin is worth. Creates a random number between
 # 'from' and 'to' which - as money - will be given to the player on pickup.
 # However, if 'dropEachCoin' is set to true, killed mobs will drop 'from' to 'to' coins,
 # with each coin being worth $1. So by default it will drop 3 to 7 coins when 'dropEachCoin' is true.
 moneyAmount:
-  from: 3
-  to: 7
+  from: 1
+  to: 1
 
 # How many decimals should money have? Set to 0 for integers/rounded money (i.e. $3 $6 $8).
 # Value 1 (default) means i.e. $2.3 $5.8 $8.0, value of 2 means i.e. $5.23, $3.70, $6.99, etc.
@@ -44,20 +44,6 @@ moneyDecimals: 0
 # Not stacking coins is just for a cooler effect.
 # This setting will be ignored (and set to false) if 'dropEachCoin' is set to true.
 stackCoins: false
-
-# Put the amount of coins dropped for a specific mob here, by default: mobs drop one coin.
-# ENDER_DRAGON is added by default, meaning that on kill of Ender Dragon, 64 coins drop.
-# Set a mob type to 0 (i.e. 'BAT: 0') to disable coins for that specific type.
-# You can find mob types via this URL (types that aren't creatures will be ignored):
-# https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
-mobMultiplier:
-  ENDER_DRAGON: 50
-  WITHER: 20
-  PLAYER: 3
-
-blocks:
-  GRASS: 30
-  POTATO: 30
 
 # When a player gets killed by another player, should (three; setting above) coins drop?
 playerDrop: false
@@ -72,10 +58,6 @@ preventAlts: true
 # When 'false', mobs can still drop coins when the player (who killed) has permission: 'coins.spawner'.
 spawnerDrop: true
 
-# Should passive mobs also drop a coin?
-# Passive mobs don't drop a coin by default.
-passiveDrop: true
-
 # Prevent slimes and magma cubes spawned by splits from dropping coins?
 # I've noticed that players can easily get hundreds of coins in slime chunks keeping this 'false'.
 preventSplits: true
@@ -85,7 +67,7 @@ preventSplits: true
 # If the sound name remains untouched, and you use 1.8, it will do an 1.8 sound automatically for you.
 # Here is a list of 1.9+ sounds: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
 pickupSound: true
-soundName: "ITEM_ARMOR_EQUIP_GOLD"
+soundName: "ENTITY_CHICKEN_EGG"
 
 # Chance of dropping a coin after a mob has been killed.
 # Value from 0.0 to 1.0: 0.0 meaning 0%, 1.0 meaning 100% (so 0.9 meaning 90%).
@@ -97,6 +79,7 @@ dropChance: 0.9
 #    - plots
 #    - creative
 disabledWorlds:
+  - disabledWorld
 
 # Lets players use /withdraw <amount> to get a coin "<amount> <coin name>s": for example "53 Coins".
 # This allows players to store the coins in chests, but won't be easier to give to others.
@@ -112,7 +95,7 @@ maxWithdrawAmount: 10000.0
 
 # Should players lose money on death?
 # It shows a title (in the middle of the screen) how much they lost on death.
-loseOnDeath: true
+loseOnDeath: false
 
 # If so, how much will be taken? A random integer in between 10 and 30 by default.
 moneyTaken:
@@ -121,3 +104,5 @@ moneyTaken:
 
 # The message in the middle of their screen.
 deathMessage: "&4- &c{$}%amount%"
+
+verbose: true

@@ -1,0 +1,29 @@
+DropChances:
+ Global:
+   IRON_ORE:
+     Chance: 50
+     Min: 1
+     Max: 3
+ Worlds:
+   world:
+     CARROTS:
+       Chance: 50
+       Min: 1
+       Max: 3
+     COAL_ORE:
+       Chance: 50
+       Min: 1
+       Max: 3
+     IRON_ORE:
+       Chance: 50
+       Min: 1
+       Max: 3
+   world_nether:
+     IRON_ORE:
+       Chance: 50
+       Min: 1
+       Max: 3
+     DIAMOND_ORE:
+       Chance: 50
+       Min: 1
+       Max: 3

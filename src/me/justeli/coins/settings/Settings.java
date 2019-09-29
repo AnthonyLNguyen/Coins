@@ -27,26 +27,59 @@ import java.util.Set;
 
 public class Settings
 {
-    public final static HashMap<Config.BOOLEAN, Boolean> hB = new HashMap<>();
-    public final static HashMap<Config.STRING, String> hS = new HashMap<>();
-    public final static HashMap<Config.DOUBLE, Double> hD = new HashMap<>();
-    public final static HashMap<Config.ARRAY, List<String>> hA = new HashMap<>();
+    public static final HashMap<Config.BOOLEAN, Boolean> hB = new HashMap<>();
+    public static final HashMap<Config.STRING, String> hS = new HashMap<>();
+    public static final HashMap<Config.DOUBLE, Double> hD = new HashMap<>();
+    public static final HashMap<Config.ARRAY, List<String>> hA = new HashMap<>();
 
     final static HashMap<Messages, String> language = new HashMap<>();
-    public final static HashMap<EntityType, Integer> multiplier_mobs = new HashMap<>();
-    public final static HashMap<Material, Integer> multiplier_blocks = new HashMap<>();
 
-    private static FileConfiguration getFile ()
+    public static File configf;
+    public static File mobf;
+    public static File blockf;
+    public static FileConfiguration config;
+    public static FileConfiguration mob;
+    public static FileConfiguration block;
+    private static Coins coins;
+
+    public Settings(Coins coins) {
+
+        Settings.coins = coins;
+        getFiles();
+    }
+
+    public static void getFiles ()
     {
-        File config = new File( Coins.getInstance().getDataFolder() + File.separator + "config.yml" );
-        if (!config.exists())
+        configf = new File(coins.getDataFolder(), "config.yml");
+        mobf = new File(coins.getDataFolder(), "mob.yml");
+        blockf = new File(coins.getDataFolder(), "block.yml");
+        configf = new File( Coins.getInstance().getDataFolder() + File.separator + "config.yml" );
+        if (!configf.exists())
             Coins.getInstance().saveDefaultConfig();
-        return YamlConfiguration.loadConfiguration( config );
+        if (!mobf.exists()) {
+            mobf.getParentFile().mkdirs();
+            coins.saveResource("mob.yml", false);
+        }
+        if (!blockf.exists()) {
+            blockf.getParentFile().mkdirs();
+            coins.saveResource("block.yml", false);
+        }
+        config = YamlConfiguration.loadConfiguration( configf );
+        mob = YamlConfiguration.loadConfiguration( mobf );
+        block = YamlConfiguration.loadConfiguration( blockf );
+    }
+
+    public static FileConfiguration getMob() {
+        return mob;
+    }
+
+    public static FileConfiguration getBlock() {
+        return block;
     }
 
     public static boolean enums ()
     {
-        FileConfiguration file = getFile();
+        FileConfiguration file = config;
         int errors = 0;
 
         try
@@ -68,20 +101,20 @@ public class Settings
                         try
                         {
                             Material coin = Material.valueOf(file.getString(s.name())
-                                    .toUpperCase().replace(" ", "_").replace("COIN", "DOUBLE_PLANT"));
+                                    .toUpperCase().replace(" ", "_").replace("COIN", "SUNFLOWER"));
                             hS.put(s, coin.name() );
                         }
                         catch (IllegalArgumentException | NullPointerException e)
                         {
                             errorMessage( Msg.NO_SUCH_MATERIAL, new String[]{file.getString(s.name())} );
-                            hS.put(s, "DOUBLE_PLANT" );
+                            hS.put(s, "SUNFLOWER" );
                             errors++;
                         }
                     }
                     else
                     {
                         errorMessage(Msg.OUTDATED_CONFIG, new String[] {"coinItem: coin"});
-                        hS.put(s, "DOUBLE_PLANT" );
+                        hS.put(s, "SUNFLOWER" );
                         errors ++;
                     }
                 }
@@ -100,34 +133,6 @@ public class Settings
             for (Config.ARRAY s : Config.ARRAY.values())
                 hA.put(s, file.getStringList( s.name() ) );
 
-            Set<String> keys = file.getConfigurationSection( Config.STRING.mobMultiplier.name() ).getKeys(false);
-            for ( String key :  keys)
-            {
-                try
-                {
-                    EntityType type = EntityType.valueOf( key.toUpperCase() );
-                    multiplier_mobs.put(type, file.getInt( Config.STRING.mobMultiplier.name() + "." + key ));
-                }
-                catch (IllegalArgumentException e)
-                {
-                    errorMessage( Msg.NO_SUCH_ENTITY, new String[] {key.toUpperCase()} );
-                    return false;
-                }
-            }
-            Set<String> bkeys = file.getConfigurationSection( Config.STRING.blocks.name() ).getKeys(false);
-            for ( String key :  bkeys)
-            {
-                try
-                {
-                    Material mat = Material.valueOf( key.toUpperCase() );
-                    multiplier_blocks.put(mat, file.getInt( Config.STRING.blocks.name() + "." + key ));
-                }
-                catch (IllegalArgumentException e)
-                {
-                    errorMessage( Msg.NO_SUCH_MATERIAL, new String[] {key.toUpperCase()} );
-                    return false;
-                }
-            }
         }
         catch (NullPointerException e)
         {
@@ -143,23 +148,16 @@ public class Settings
 
     public static void remove ()
     {
-        multiplier_mobs.clear();
         hB.clear();
         hS.clear();
         hD.clear();
         hA.clear();
+        getFiles();
     }
 
     public static String getSettings ()
     {
         StringBuilder message = new StringBuilder( Messages.LOADED_SETTINGS.toString() + "\n&r" );
-        for (Config.STRING s : Config.STRING.values())
-            if (!s.equals(Config.STRING.mobMultiplier))
-                message.append(s.toString()).append(" &7\u00BB &8").append(hS.get(s)).append("\n&r");
-
-        for (Config.STRING s : Config.STRING.values())
-            if (!s.equals(Config.STRING.blocks))
-                message.append(s.toString()).append(" &7\u00BB &8").append(hS.get(s)).append("\n&r");
 
         for (Config.BOOLEAN s : Config.BOOLEAN.values())
             if (!s.equals(Config.BOOLEAN.olderServer))
@@ -181,7 +179,7 @@ public class Settings
             if (!new File(Coins.getInstance().getDataFolder() + File.separator + "language" + File.separator + lang + ".json").exists())
                 Coins.getInstance().saveResource("language/" + lang + ".json", false);
 
-        FileConfiguration file = getFile();
+        FileConfiguration file = config;
         String lang = getLanguage();
         boolean failure = false;
 
@@ -227,7 +225,7 @@ public class Settings
     {
         try
         {
-            FileConfiguration file = getFile();
+            FileConfiguration file = config;
             return file.getString("language").toLowerCase();
         }
         catch (NullPointerException e)

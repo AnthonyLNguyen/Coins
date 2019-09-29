@@ -116,15 +116,16 @@ public class CoinsPickup implements Listener
 	{
 		if (Settings.hB.get(Config.BOOLEAN.dropEachCoin))
 		{
-			addMoney (p, (double)item.getAmount(), 0);
+			addMoney (p, (double)item.getAmount(), 1);
 			return;
 		}
 
 		Double second = Settings.hD.get(Config.DOUBLE.moneyAmount_from);
-		Double first  = Settings.hD.get(Config.DOUBLE.moneyAmount_to) - second;
+		Double first  = Settings.hD.get(Config.DOUBLE.moneyAmount_to);
 
 		int amount = item.getAmount();
-		Double total = amount * ( Math.random() * first + second );
+		if (second > first);
+			Double total = amount * ( Math.random() * (first  - second) + second );
 
 		addMoney (p, total, Settings.hD.get(Config.DOUBLE.moneyDecimals).intValue());
 	}

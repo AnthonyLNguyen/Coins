@@ -12,7 +12,6 @@ public enum Config
     {
         stackCoins,
         spawnerDrop,
-        passiveDrop,
         pickupSound,
         loseOnDeath,
         olderServer,
@@ -24,6 +23,7 @@ public enum Config
         newerServer,
         BeastTokens,
         KillerRequired,
+        verbose,
     }
 
     public enum STRING
@@ -33,8 +33,6 @@ public enum Config
         pickupMessage,
         deathMessage,
         soundName,
-        mobMultiplier,
-        blocks,
         currencySymbol,
         multiSuffix
     }

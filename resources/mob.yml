@@ -1,0 +1,35 @@
+DropChances:
+ Global:
+    PLAYER:
+        Chance: 1
+        NumTokens: 1
+    SKELETON:
+        Chance: 1
+        NumTokens: 1
+    CREEPER:
+        Chance: 1
+        NumTokens: 1
+    CAVE_SPIDER:
+        Chance: 1
+        NumTokens: 1
+    SPIDER:
+        Chance: 1
+        NumTokens: 1
+    PIG_ZOMBIE:
+        Chance: 1
+        NumTokens: 1
+ Worlds:
+  world:
+    CREEPER:
+        Chance: 1
+        NumTokens: 10
+    SPIDER:
+        Chance: 1
+        NumTokens: 1
+  world_nether:
+    SKELETON:
+        Chance: 1
+        NumTokens: 1
+    PIG_ZOMBIE:
+        Chance: 1
+        NumTokens: 1

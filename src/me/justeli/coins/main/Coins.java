@@ -9,6 +9,7 @@ import me.justeli.coins.cancel.CancelHopper;
 import me.justeli.coins.cancel.CancelInventories;
 import me.justeli.coins.cancel.CoinPlace;
 import me.justeli.coins.cancel.PreventSpawner;
+import me.justeli.coins.events.BlockTracking;
 import me.justeli.coins.events.CoinsPickup;
 import me.justeli.coins.events.DropCoin;
 import me.justeli.coins.item.CoinParticles;
@@ -19,6 +20,7 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -41,10 +43,12 @@ import java.util.Set;
 
 public class Coins extends JavaPlugin
 {
+    public static BlockTracking blockTracking;
     private static Coins main;
     private static BeastTokens beastTokens;
     private static Economy eco;
     private static TokensAPI tk;
+    private static Settings s;
 
     static String update;
 
@@ -62,6 +66,9 @@ public class Coins extends JavaPlugin
     {
         main = this;
         Locale.setDefault(Locale.US);
+
+        s = new Settings(this);
+        blockTracking = new BlockTracking(this);
 
         registerConfig();
         registerEvents();
@@ -112,7 +119,6 @@ public class Coins extends JavaPlugin
             metrics.add("pickupSound", Settings.hS.get(Config.STRING.soundName));
             metrics.add("enableWithdraw", String.valueOf(Settings.hB.get(Config.BOOLEAN.enableWithdraw)));
             metrics.add("loseOnDeath", String.valueOf(Settings.hB.get(Config.BOOLEAN.loseOnDeath)));
-            metrics.add("passiveDrop", String.valueOf(Settings.hB.get(Config.BOOLEAN.passiveDrop)));
 
             metrics.add("nameOfCoin", Settings.hS.get(Config.STRING.nameOfCoin));
             metrics.add("coinItem", Settings.hS.get(Config.STRING.coinItem));
@@ -149,11 +155,18 @@ public class Coins extends JavaPlugin
                 Bukkit.getPluginManager().disablePlugin(this);
             }
         }
+        Coins.console(LogType.INFO, "verbose: " + Settings.hB.get(Config.BOOLEAN.verbose));
     }
 
     public static Economy getEconomy (){ return eco; }
 
     public static BeastTokens getBeastTokens(){ return beastTokens; }
+
+    public FileConfiguration getMob() {
+        return s.getMob();
+    }
+
+    public FileConfiguration getBlock() { return s.getBlock(); }
 
     public static void particles (Location location, int radius, int amount)
     {
@@ -176,7 +189,7 @@ public class Coins extends JavaPlugin
         manager.registerEvents(new CancelHopper(), this);
         manager.registerEvents(new PreventSpawner(), this);
         manager.registerEvents(new CoinsPickup(), this);
-        manager.registerEvents(new DropCoin(), this);
+        manager.registerEvents(new DropCoin(this), this);
         manager.registerEvents(new CoinPlace(), this);
         manager.registerEvents(new CancelInventories(), this);
     }
