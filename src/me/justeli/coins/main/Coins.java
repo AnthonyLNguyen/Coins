@@ -1,5 +1,6 @@
 package me.justeli.coins.main;
 
+import com.bgsoftware.wildstacker.WildStackerPlugin;
 import com.bgsoftware.wildstacker.api.WildStackerAPI;
 import me.MrAxe.BeastTokens.BeastTokens;
 import me.justeli.coins.cancel.CancelHopper;
@@ -38,6 +39,7 @@ public class Coins extends JavaPlugin
     public static BlockTracking blockTracking;
     private static Coins main;
     private static BeastTokens beastTokens;
+    private static WildStackerPlugin wildStackerPlugin;
     private static Economy eco;
     private static Settings s;
 
@@ -132,6 +134,7 @@ public class Coins extends JavaPlugin
                 Coins.console(LogType.INFO, "Trying to use WildStacker Hook");
                 try {
                     usingWildStacker = true;
+                    wildStackerPlugin = (WildStackerPlugin) getServer().getPluginManager().getPlugin("WildStacker");
                 } catch (NullPointerException | NoClassDefFoundError e) {
                     Coins.console(LogType.INFO, "WildStacker not found, disabling hook."); //Doesn't actually do anything
                     //Settings.errorMessage(Settings.Msg.NO_WILDSTACKER_SUPPORT, new String[]{""});
@@ -182,6 +185,8 @@ public class Coins extends JavaPlugin
             return WildStackerAPI.getEntityAmount(entity);
         } else return 1;
     }
+
+    public static WildStackerPlugin getWildStackerPlugin(){return wildStackerPlugin;}
 
     public static BeastTokens getBeastTokens(){ return beastTokens; }
 
@@ -268,7 +273,9 @@ public class Coins extends JavaPlugin
     {
         ERROR,
         WARNING,
-        INFO
+        INFO,
+        DEBUG;
+
     }
 
     public static void console (LogType type, String message)
@@ -276,10 +283,11 @@ public class Coins extends JavaPlugin
         ChatColor color;
         switch (type)
         {
-            case INFO:      color = ChatColor.AQUA;     break;
-            case ERROR:     color = ChatColor.RED;      break;
-            case WARNING:   color = ChatColor.YELLOW;   break;
-            default:        color = ChatColor.WHITE;    break;
+            case INFO:      color = ChatColor.AQUA;         break;
+            case ERROR:     color = ChatColor.RED;          break;
+            case WARNING:   color = ChatColor.YELLOW;       break;
+            case DEBUG:     color = ChatColor.DARK_GREEN;   break;
+            default:        color = ChatColor.WHITE;        break;
         }
         Bukkit.getConsoleSender().sendMessage(color + "[CoinDrops] - " + type.name() + ": " + message);
     }

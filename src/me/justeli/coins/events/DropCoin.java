@@ -1,5 +1,9 @@
 package me.justeli.coins.events;
 
+import com.bgsoftware.wildstacker.WildStackerPlugin;
+import com.bgsoftware.wildstacker.api.WildStackerAPI;
+import com.bgsoftware.wildstacker.config.CommentedConfiguration;
+import com.bgsoftware.wildstacker.config.ConfigComments;
 import me.jet315.minions.events.MinerBlockBreakEvent;
 import me.justeli.coins.api.ActionBar;
 import me.justeli.coins.api.Title;
@@ -13,6 +17,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -27,6 +32,7 @@ import org.bukkit.block.data.Ageable;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
+import java.io.File;
 import java.util.List;
 
 public class DropCoin implements Listener
@@ -39,10 +45,16 @@ public class DropCoin implements Listener
 
     @EventHandler
     public void onEntityDamageEvent (EntityDamageEvent e){
-        int stackSize = Coins.getStackedAmount((LivingEntity)e.getEntity());
-        if (Settings.hB.get(Config.BOOLEAN.debug))
-            Coins.console(Coins.LogType.INFO ,"Stack Size: " + stackSize);
-        e.getEntity().setMetadata("stackSize", new FixedMetadataValue(c, Coins.getStackedAmount((LivingEntity)e.getEntity())));
+        if (e.getEntity() instanceof LivingEntity ) {
+            double damage = e.getFinalDamage();
+            double health = ((LivingEntity) e.getEntity()).getHealth();
+            if (damage >= health) {
+                int stackSize = Coins.getStackedAmount((LivingEntity) e.getEntity());
+                if (Settings.hB.get(Config.BOOLEAN.debug))
+                    Coins.console(Coins.LogType.DEBUG, e.getEntity() + " Stack Size: " + stackSize + " | Health: " + health + " | Damage: " + damage);
+                e.getEntity().setMetadata("stackSize", new FixedMetadataValue(c, Coins.getStackedAmount((LivingEntity) e.getEntity())));
+            }
+        }
     }
 
 	@EventHandler
@@ -96,12 +108,12 @@ public class DropCoin implements Listener
     public void onPistonEvent(BlockPistonExtendEvent p){
         List<Block> blockList = p.getBlocks();
         BlockFace dir = p.getDirection();
-        Coins.console(Coins.LogType.INFO,dir.toString());
+        Coins.console(Coins.LogType.DEBUG,dir.toString());
 
         for (Block b:
              blockList) {
-            Coins.console(Coins.LogType.INFO,"Coord: " + b.getLocation().toString() + "->" + b.getLocation().add(dir.getDirection()).toString());
-            Coins.console(Coins.LogType.INFO,"Chunk: " + b.getChunk().toString() + "->" + b.getLocation().add(dir.getDirection()).getChunk().toString());
+            Coins.console(Coins.LogType.DEBUG,"Coord: " + b.getLocation().toString() + "->" + b.getLocation().add(dir.getDirection()).toString());
+            Coins.console(Coins.LogType.DEBUG,"Chunk: " + b.getChunk().toString() + "->" + b.getLocation().add(dir.getDirection()).getChunk().toString());
             Coins.blockTracking.addLocation(b.getLocation().add(dir.getDirection()).getChunk().toString(), b.getLocation().add(dir.getDirection()));
             Coins.blockTracking.addLocation(b.getChunk().toString(), b.getLocation());
         }
@@ -155,15 +167,15 @@ public class DropCoin implements Listener
                         amount = (int) (amount * ( Math.random() * (first  - second) + second ));
 
                     roll = Math.random() * 99 + 1;
-                    if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.INFO, "Amount: " + amount + " | Chance: " + chance + " | Roll: " + roll + " (" + (chance >= roll) + ").");
+                    if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.DEBUG, "Amount: " + amount + " | Chance: " + chance + " | Roll: " + roll + " (" + (chance >= roll) + ").");
                     if (chance >= roll) {
                         if (b.getBlock().getBlockData() instanceof Ageable) {
                             Ageable crop = (Ageable) b.getBlock().getBlockData();
-                            if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.INFO, "Ageable broken " + crop.getAge() + ":" + crop.getMaximumAge());
+                            if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.DEBUG, "Ageable broken " + crop.getAge() + ":" + crop.getMaximumAge());
                             if (crop.getAge() < crop.getMaximumAge())
                                 return;
                         }
-                        if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.INFO, "Drop Block detected: " + b.getBlock().getType().name());
+                        if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.DEBUG, "Drop Block detected: " + b.getBlock().getType().name());
                         if (Coins.usingBeastTokens) {
                             Coins.getBeastTokens().getTokensManager().addTokens(b.getMinion().getPlayer(), amount);
                         } else {
@@ -222,24 +234,23 @@ public class DropCoin implements Listener
                     amount = min + (int)(Math.random() * ((max - min) + 1));
 
                     roll = Math.random() * 99 + 1;
-                    if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.INFO, "Amount: " + amount + " | Chance: " + chance + " | Roll: " + roll + " (" + (chance >= roll) + ").");
+                    if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.DEBUG, "Amount: " + amount + " | Chance: " + chance + " | Roll: " + roll + " (" + (chance >= roll) + ").");
                     if (chance >= roll) {
                         if (b.getBlock().getBlockData() instanceof Ageable) {
                             Ageable crop = (Ageable) b.getBlock().getBlockData();
-                            if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.INFO, "Ageable broken " + crop.getAge() + ":" + crop.getMaximumAge());
+                            if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.DEBUG, "Ageable broken " + crop.getAge() + ":" + crop.getMaximumAge());
                             if (crop.getAge() < crop.getMaximumAge())
                                 return;
                         }
-                        if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.INFO, "Drop Block detected: " + b.getBlock().getType().name());
+                        if (Settings.hB.get(Config.BOOLEAN.debug)) Coins.console(Coins.LogType.DEBUG, "Drop Block detected: " + b.getBlock().getType().name());
                         for (int i = 0; i < amount; i++) {
                             ItemStack coin = new Coin().stack(!Settings.hB.get(Config.BOOLEAN.dropEachCoin)).item();
-                            Item ccoin = b.getBlock().getLocation().getWorld().dropItemNaturally(b.getBlock().getLocation(), coin);
-                            Entity ecoin = ccoin;
-                            if (ccoin.getItemStack().getAmount() == 1)
-                                ecoin.setCustomName(ChatColor.translateAlternateColorCodes('&', Settings.hS.get(Config.STRING.nameOfCoin)));
+                            Item dropCoin = b.getBlock().getLocation().getWorld().dropItemNaturally(b.getBlock().getLocation(), coin);
+                            if (dropCoin.getItemStack().getAmount() == 1)
+                                dropCoin.setCustomName(ChatColor.translateAlternateColorCodes('&', Settings.hS.get(Config.STRING.nameOfCoin)));
                             else
-                                ecoin.setCustomName(ChatColor.translateAlternateColorCodes('&', Settings.hS.get(Config.STRING.nameOfCoin)) + Settings.hS.get(Config.STRING.multiSuffix));
-                            ecoin.setCustomNameVisible(true);
+                                dropCoin.setCustomName(ChatColor.translateAlternateColorCodes('&', Settings.hS.get(Config.STRING.nameOfCoin)) + Settings.hS.get(Config.STRING.multiSuffix));
+                            dropCoin.setCustomNameVisible(true);
                         }
                     }
                 }
@@ -253,7 +264,7 @@ public class DropCoin implements Listener
         if (dropEvent.isCancelled())
             return;
 
-        if (m.getType().equals(EntityType.PLAYER) && Settings.hB.get(Config.BOOLEAN.preventAlts)) {
+        if (p != null && m.getType().equals(EntityType.PLAYER) && Settings.hB.get(Config.BOOLEAN.preventAlts)) {
             Player player = (Player) m;
             if (p.getAddress().getAddress().getHostAddress()
                     .equals(player.getAddress().getAddress().getHostAddress()))
@@ -294,23 +305,25 @@ public class DropCoin implements Listener
                     min = c.getMob().getInt(path + e + ".Min");
 
                     amount = min + (int)(Math.random() * ((max - min) + 1));
-                    if (Settings.hB.get(Config.BOOLEAN.debug))
-                        Coins.console(Coins.LogType.INFO,(LivingEntity) m + " | Stack Amount: " + m.getMetadata("stackSize"));
                     List<MetadataValue> list = m.getMetadata("stackSize");
-                    amount *= list.get(0).asInt();
+                    if (Settings.hB.get(Config.BOOLEAN.debug))
+                        Coins.console(Coins.LogType.DEBUG,(LivingEntity) m + " | Stack Amount: " + list);
+                    File file = new File(Coins.getWildStackerPlugin().getDataFolder(),"config.yml");
+                    CommentedConfiguration cfg = new CommentedConfiguration(ConfigComments.class, file);
+                    if (cfg.getStringList("entities.instant-kill").contains(m.getType().name()))
+                        amount *= list.get(0).asInt();
 
                     roll = Math.random() * 99 + 1;
                     if (Settings.hB.get(Config.BOOLEAN.debug))
-                        Coins.console(Coins.LogType.INFO, "Amount: " + amount + " | Chance: " + chance + " | Roll: " + roll + " (" + (chance >= roll) + ").");
+                        Coins.console(Coins.LogType.DEBUG, "Amount: " + amount + " | Chance: " + chance + " | Roll: " + roll + " (" + (chance >= roll) + ").");
                     if (chance >= roll) {
                         if (Settings.hB.get(Config.BOOLEAN.debug))
-                            Coins.console(Coins.LogType.INFO, "Kill Drop detected: " + e.name());
+                            Coins.console(Coins.LogType.DEBUG, "Kill Drop detected: " + e.name());
                         for (int i = 0; i < amount; i++) {
                             ItemStack coin = new Coin().stack(!Settings.hB.get(Config.BOOLEAN.dropEachCoin)).item();
-                            Item ccoin = m.getLocation().getWorld().dropItemNaturally(m.getLocation(), coin);
-                            Entity ecoin = ccoin;
-                            ecoin.setCustomName(ChatColor.translateAlternateColorCodes('&', Settings.hS.get(Config.STRING.nameOfCoin)) + Settings.hS.get(Config.STRING.multiSuffix));
-                            ecoin.setCustomNameVisible(true);
+                            Item dropCoin = m.getLocation().getWorld().dropItemNaturally(m.getLocation(), coin);
+                            dropCoin.setCustomName(ChatColor.translateAlternateColorCodes('&', Settings.hS.get(Config.STRING.nameOfCoin)) + Settings.hS.get(Config.STRING.multiSuffix));
+                            dropCoin.setCustomNameVisible(true);
                         }
                     }
             } else PreventSpawner.removeFromList(m);
