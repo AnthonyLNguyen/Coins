@@ -310,7 +310,7 @@ public class DropCoin implements Listener
                         Coins.console(Coins.LogType.DEBUG,(LivingEntity) m + " | Stack Amount: " + list);
                     File file = new File(Coins.getWildStackerPlugin().getDataFolder(),"config.yml");
                     CommentedConfiguration cfg = new CommentedConfiguration(ConfigComments.class, file);
-                    if (cfg.getStringList("entities.instant-kill").contains(m.getType().name()))
+                    if (!list.isEmpty() && cfg.getStringList("entities.instant-kill").contains(m.getType().name()))
                         amount *= list.get(0).asInt();
 
                     roll = Math.random() * 99 + 1;
